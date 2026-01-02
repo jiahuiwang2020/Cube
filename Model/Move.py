@@ -1,7 +1,12 @@
 from dataclasses import dataclass
+from enum import Enum
 
 
 @dataclass(frozen=True)
-class Move:
-    face: str  # 'R', 'L', 'U', 'D', 'F', 'B'
-    clockwise: bool = True
+class Move(Enum):
+    R = "R"
+    L = "L"
+    U = "U"
+    D = "D"
+    F = "F"
+    B = "B"

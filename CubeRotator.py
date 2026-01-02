@@ -1,19 +1,19 @@
-from Cube.Model.Cube import Cube
-from Cube.Model.Move import Move
+from Cube import Cube
+from Model.Move import Move
 
 
 class CubeRotator:
 
     @staticmethod
-    def execute(cube: Cube, move: Move):
-        axis, layer = CubeRotator._face_to_axis(move.face)
+    def execute(cube: Cube, move: Move, clockwise: bool):
+        axis, layer = CubeRotator._face_to_axis(move.value)
         targets = CubeRotator._select(cube.cubies, axis, layer)
 
         for cubie in targets:
             cubie.position = CubeRotator._rotate_position(
-                cubie.position, axis, move.clockwise
+                cubie.position, axis, clockwise
             )
-            cubie.rotate(axis, move.clockwise)
+            cubie.rotate(axis, clockwise)
 
     @staticmethod
     def _face_to_axis(face: str):
@@ -35,9 +35,12 @@ class CubeRotator:
     def _rotate_position(pos, axis, cw):
         x, y, z = pos
         if axis == "x":
+            # Rotate in the YZ plane
             return (x, -z, y) if cw else (x, z, -y)
         if axis == "y":
+            # Rotate in the XZ plane
             return (z, y, -x) if cw else (-z, y, x)
         if axis == "z":
+            # Rotate in the XY plane
             return (-y, x, z) if cw else (y, -x, z)
         return pos
