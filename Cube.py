@@ -11,17 +11,6 @@ class Cube:
     def __init__(self):
         print("Initializing Cube...")
         self.cubies: List[Cubie] = []
-        self.COLOR_MAP = {
-            Color.W: "white",
-            Color.Y: "yellow",
-            Color.R: "red",
-            Color.O: "orange",
-            Color.B: "blue",
-            Color.G: "green",
-        }
-        self._init_solved()
-
-    def _init_solved(self):
         for x in [-1, 0, 1]:
             for y in [-1, 0, 1]:
                 for z in [-1, 0, 1]:
@@ -45,11 +34,13 @@ class Cube:
                     self.cubies.append(Cubie((x, y, z), stickers))
 
     def apply_move(self, move: Move, clockwise: bool = True):
+        """Configure the cube by applying a move."""
         from CubeRotator import CubeRotator
 
         CubeRotator.execute(self, move, clockwise)
 
     def is_solved(self) -> bool:
+        """Check if the cube is in a solved state."""
         is_solved = True
         faces = {
             Direction.UP: lambda p: p[1] == 1,
@@ -76,76 +67,12 @@ class Cube:
 
         return is_solved
 
-    def draw_square(self, ax, vertices, color):
-        poly = Poly3DCollection([vertices])
-        poly.set_facecolor(color)
-        poly.set_edgecolor("black")
-        ax.add_collection3d(poly)
+    def scramble(self):
+        scramble_count = 5
 
-    def sticker_vertices(self, x, y, z, direction, size=0.9):
-        s = size / 2
-        o = 0.5
+        for _ in range(scramble_count):
+            from random import choice, random
 
-        if direction == Direction.UP:
-            return [
-                (x - s, y + o, z - s),
-                (x + s, y + o, z - s),
-                (x + s, y + o, z + s),
-                (x - s, y + o, z + s),
-            ]
-        if direction == Direction.DOWN:
-            return [
-                (x - s, y - o, z - s),
-                (x + s, y - o, z - s),
-                (x + s, y - o, z + s),
-                (x - s, y - o, z + s),
-            ]
-        if direction == Direction.FRONT:
-            return [
-                (x - s, y - s, z + o),
-                (x + s, y - s, z + o),
-                (x + s, y + s, z + o),
-                (x - s, y + s, z + o),
-            ]
-        if direction == Direction.BACK:
-            return [
-                (x - s, y - s, z - o),
-                (x + s, y - s, z - o),
-                (x + s, y + s, z - o),
-                (x - s, y + s, z - o),
-            ]
-        if direction == Direction.RIGHT:
-            return [
-                (x + o, y - s, z - s),
-                (x + o, y + s, z - s),
-                (x + o, y + s, z + s),
-                (x + o, y - s, z + s),
-            ]
-        if direction == Direction.LEFT:
-            return [
-                (x - o, y - s, z - s),
-                (x - o, y + s, z - s),
-                (x - o, y + s, z + s),
-                (x - o, y - s, z + s),
-            ]
-
-    def visualize_3d(self):
-        print("Visualizing cube in 3D...")
-        fig = plt.figure(figsize=(6, 6))
-        ax = fig.add_subplot(111, projection="3d")
-
-        for cubie in self.cubies:
-            x, y, z = cubie.position
-
-            for d, color in cubie.stickers.items():
-                verts = self.sticker_vertices(x, y, z, d)
-                self.draw_square(ax, verts, self.COLOR_MAP[color])
-
-        ax.set_xlim([-2, 2])
-        ax.set_ylim([-2, 2])
-        ax.set_zlim([-2, 2])
-
-        ax.set_box_aspect([1, 1, 1])
-        ax.axis("off")
-
-        plt.show()
+            move = choice(list(Move))
+            clockwise = random() < 0.5
+            self.apply_move(move, clockwise)

@@ -1,19 +1,16 @@
 from Cube import Cube
 from Model.Move import Move
+from Service.Visualizer import Visualizer
+from Service import RandomSolver
+
 
 cube = Cube()
 
-try_count = 1000000
+## Scramble the cube
+cube.scramble()
 
-for _ in range(try_count):
-    from random import choice, random
+## Try to solve the cube with different solvers
+random_solver_result = RandomSolver.Solve(cube, 100)
 
-    move = choice(list(Move))
-    clockwise = random() < 0.5
-    cube.apply_move(move, clockwise)
-
-    if cube.is_solved():
-        print(f"Solved the cube in {_ + 1} moves!")
-        break
-
-cube.visualize_3d()
+visualizer = Visualizer(cube)
+visualizer.visualize_3d()
