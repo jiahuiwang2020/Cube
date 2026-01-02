@@ -3,8 +3,6 @@ from Model.Direction import Direction
 from Model.Color import Color
 from Model.Cubie import Cubie
 from Model.Move import Move
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
 class Cube:
@@ -41,7 +39,6 @@ class Cube:
 
     def is_solved(self) -> bool:
         """Check if the cube is in a solved state."""
-        is_solved = True
         faces = {
             Direction.UP: lambda p: p[1] == 1,
             Direction.DOWN: lambda p: p[1] == -1,
@@ -58,21 +55,19 @@ class Cube:
                     colors.append(c.stickers[face])
 
             if len(colors) != 9:
-                is_solved = False
-                break
+                return False
 
             if len(set(colors)) != 1:
-                is_solved = False
-                break
+                return False
 
-        return is_solved
+        return True
 
     def scramble(self):
-        scramble_count = 5
-
+        scramble_count = 20
         for _ in range(scramble_count):
             from random import choice, random
 
             move = choice(list(Move))
             clockwise = random() < 0.5
             self.apply_move(move, clockwise)
+        print("Cube scrambled.")
